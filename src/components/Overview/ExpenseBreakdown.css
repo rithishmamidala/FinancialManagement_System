@@ -68,7 +68,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 20px; /* Increased gap for more spacing between boxes */
-    padding: 20px; /* Added padding around the entire summary */
+    padding: 10px; /* Added padding around the entire summary */
 }
 
 .category-box {

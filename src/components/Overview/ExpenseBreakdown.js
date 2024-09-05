@@ -131,6 +131,7 @@ function ExpenseBreakdown() {
 
     return (
         <div className="expense-container">
+            
             <div className="category-summary">
                 {paginatedData.map(({ category, currentMonthTotal, previousMonthTotal, percentageChange }) => (
                     <div className="category-box" key={category}>

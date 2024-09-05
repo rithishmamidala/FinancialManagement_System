@@ -94,7 +94,7 @@ const Overview = () => {
 
       <div className="overview-section overview-top-section">
         <div className="overview-balance-container">
-          <h1 style={{"marginBottom":"20px","font-size":"20px"}}>Total Balance</h1>
+          <h1 style={{"marginBottom":"30px","font-size":"20px"}}>Total Balance</h1>
           <div className="overview-card-part">
             <BalanceCards showFirstCardOnly={true} currentCardIndex={currentCardIndex} />
           </div>
