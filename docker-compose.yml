@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: pass@word1  # Set the root password
+      MYSQL_DATABASE: dump               # Create a database named 'dump'
+    ports:
+      - "3308:3306"                      # Map host port 3308 to MySQL port 3306
+    networks:
+      - app-network                      # Connect to the custom bridge network
+
+  accounts:
+    build:
+      context: ./BackEnd/Accounts       # Build from the Accounts directory
+    ports:
+      - "2001:2001"                     # Map host port 2001 to the service port
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev      # Set Spring profile to 'dev'
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/dump  # Database connection URL
+      - SPRING_DATASOURCE_USERNAME=root  # Database username
+      - SPRING_DATASOURCE_PASSWORD=pass@word1  # Database password
+    networks:
+      - app-network                     # Connect to the same network as db
+    depends_on:
+      - db                              # Ensure db service starts before accounts
+
+  transactionhistory:
+    build:
+      context: ./BackEnd/TransactionHistory       # Build from the TransactionHistory directory
+    ports:
+      - "2002:2002"                     # Map host port 2002 to the service port
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev      # Set Spring profile to 'dev'
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/dump  # Database connection URL
+      - SPRING_DATASOURCE_USERNAME=root  # Database username
+      - SPRING_DATASOURCE_PASSWORD=pass@word1  # Database password
+    networks:
+      - app-network                     # Connect to the same network as db
+    depends_on:
+      - db                              # Ensure db service starts before transactionhistory
+
+  goals:
+    build:
+      context: ./BackEnd/expensegoals       # Build from the TransactionHistory directory
+    ports:
+      - "2003:2003"                     # Map host port 2002 to the service port
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev      # Set Spring profile to 'dev'
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/dump  # Database connection URL
+      - SPRING_DATASOURCE_USERNAME=root  # Database username
+      - SPRING_DATASOURCE_PASSWORD=pass@word1  # Database password
+    networks:
+      - app-network                     # Connect to the same network as db
+    depends_on:
+      - db   
+  secure:
+    build:
+      context: ./BackEnd/Secure         # Build from the Secure directory
+    ports:
+      - "9099:9099"                     # Map host port 9099 to the service port
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev      # Set Spring profile to 'dev'
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/dump  # Database connection URL
+      - SPRING_DATASOURCE_USERNAME=root  # Database username
+      - SPRING_DATASOURCE_PASSWORD=pass@word1  # Database password
+    networks:
+      - app-network                     # Connect to the same network as db
+    depends_on:
+      - db                              # Ensure db service starts before secure
+
+  frontend:
+    build:
+      context: ./FrontEnd               # Build from the FrontEnd directory
+    ports:
+      - "3000:80"                       # Map host port 3000 to the service port
+    networks:
+      - app-network                     # Connect to the same network as others
+
+networks:
+  app-network:
+    driver: bridge                      # Use a bridge network for inter-service communication
